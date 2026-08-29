@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Media | Elite Creator Management & UGC Agency</title>
+  <meta name="description" content="Nexus Media connects visionary brands with elite creators and performance UGC talent.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: {
+              950: '#030305',
+              900: '#07080c',
+              800: '#0e1017',
+              700: '#171a24'
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'float-slow': 'float 10s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 8s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(28px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+              '50%': { transform: 'translateY(-14px) rotate(1deg)' },
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+              '50%': { opacity: '0.45', transform: 'scale(1.08)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+  
+  <style>
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: #030305; 
+      color: #f1f5f9; 
+      overflow-x: hidden; 
+    }
+
+    /* Glassmorphism Surface Cards */
+    .glass-card {
+      background: rgba(14, 16, 23, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Ambient Spotlight Effect */
+    #ambient-spotlight {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 1;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.035), transparent 80%);
+    }
+
+    .obsidian-gradient {
+      background: radial-gradient(circle at 50% 0%, rgba(30, 35, 50, 0.35) 0%, rgba(7, 8, 12, 0.2) 55%, transparent 85%);
+    }
+
+    /* Custom Slider */
+/* Track Base Reset */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  outline: none;
+}
+
+/* Chrome, Safari, Edge Thumb */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  margin-top: -6px; /* Fixes WebKit misalignment: (Track Height 6px - Thumb Height 18px) / 2 */
+}
+
+/* Firefox Thumb & Track */
+input[type=range]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+input[type=range]::-moz-range-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-neutral-800 selection:text-white">
+
+  <!-- Interactive Ambient Mouse Spotlight -->
+  <div id="ambient-spotlight"></div>
+
+  <!-- 3.5-SECOND CINEMATIC PRELOADER -->
+  <div id="loader" class="fixed inset-0 z-50 bg-[#030305] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out">
+    <div class="text-center">
+      <div class="text-2xl sm:text-3xl font-semibold tracking-[0.3em] text-white uppercase mb-4">
+        Nexus <span class="text-neutral-500 font-light">Media</span>
+      </div>
+      <div class="w-48 h-[1px] bg-neutral-900 mx-auto relative overflow-hidden mb-3">
+        <div id="loader-bar" class="absolute left-0 top-0 h-full w-0 bg-gradient-to-r from-neutral-500 via-white to-neutral-400 transition-all duration-100 ease-out"></div>
+      </div>
+      <div id="loader-counter" class="text-[10px] tracking-widest text-neutral-500 uppercase font-light">0%</div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="sticky top-0 z-40 bg-[#030305]/85 backdrop-blur-2xl border-b border-white/5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="flex items-center justify-between h-24">
+        <a href="#home" class="flex items-center gap-3 group">
+          <span class="text-lg font-semibold tracking-widest text-white uppercase">Nexus <span class="text-neutral-400 font-light">Media</span></span>
+        </a>
+        
+        <div class="hidden md:flex items-center space-x-10">
+          <a href="#home" class="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition">Home</a>
+          <a href="#creators" class="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition">Roster</a>
+          <a href="#calculator" class="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition">ROI Estimator</a>
+          <a href="#services" class="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition">Capabilities</a>
+          <a href="#about" class="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition">About</a>
+        </div>
+
+        <div class="hidden md:block">
+          <a href="mailto:nexusmedia490@gmail.com" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium bg-white text-neutral-950 hover:bg-neutral-200 transition shadow-lg hover:shadow-white/10">
+            <span>Collaborate</span>
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-neutral-400 hover:text-white p-2">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-obsidian-900 border-b border-white/5 px-6 pt-4 pb-6 space-y-3">
+      <a href="#home" class="mobile-link block text-neutral-300 hover:text-white py-2 text-sm">Home</a>
+      <a href="#creators" class="mobile-link block text-neutral-300 hover:text-white py-2 text-sm">Roster</a>
+      <a href="#calculator" class="mobile-link block text-neutral-300 hover:text-white py-2 text-sm">ROI Estimator</a>
+      <a href="#services" class="mobile-link block text-neutral-300 hover:text-white py-2 text-sm">Capabilities</a>
+      <a href="#about" class="mobile-link block text-neutral-300 hover:text-white py-2 text-sm">About</a>
+      <a href="mailto:nexusmedia490@gmail.com" class="block text-white font-medium pt-2 text-sm">nexusmedia490@gmail.com</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="relative pt-36 pb-28 md:pt-48 md:pb-36 overflow-hidden obsidian-gradient">
+    <div class="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-neutral-800/15 rounded-full blur-[140px] pointer-events-none animate-pulse-glow"></div>
+    <div class="absolute top-1/2 -right-40 w-[28rem] h-[28rem] bg-indigo-900/10 rounded-full blur-[140px] pointer-events-none animate-pulse-glow"></div>
+
+    <div class="max-w-6xl mx-auto px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl mx-auto text-center animate-fade-in-up">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-[11px] uppercase tracking-widest text-neutral-300 mb-8 backdrop-blur-md animate-float-slow">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>Verified Creator Roster & UGC Agency</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-white mb-6 leading-[1.1]">
+          Amplifying Brands Through <span class="text-neutral-400 font-light italic">Elite Creators.</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-neutral-400 mb-12 leading-relaxed max-w-xl mx-auto font-light">
+          We bridge visionary brands with top-tier beauty, lifestyle, and conversion-focused UGC talent for high-impact campaigns.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#creators" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs uppercase tracking-wider font-medium bg-white text-neutral-950 hover:bg-neutral-200 transition shadow-xl">
+            Explore Roster <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="mailto:nexusmedia490@gmail.com" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs uppercase tracking-wider font-medium bg-white/[0.03] text-white border border-white/10 hover:bg-white/[0.08] transition backdrop-blur-md">
+            Direct Email Inquiry
+          </a>
+        </div>
+
+        <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-white/5 text-left">
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-2xl font-light text-white mb-1">10+</div>
+            <div class="text-[11px] uppercase tracking-wider text-neutral-400">Curated Creators</div>
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-2xl font-light text-white mb-1">9M+</div>
+            <div class="text-[11px] uppercase tracking-wider text-neutral-400">Max Reach Generated</div>
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-2xl font-light text-white mb-1">Beauty & UGC</div>
+            <div class="text-[11px] uppercase tracking-wider text-neutral-400">Specialized Niches</div>
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-2xl font-light text-white mb-1">End-to-End</div>
+            <div class="text-[11px] uppercase tracking-wider text-neutral-400">Campaign Management</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATOR ROSTER SECTION -->
+  <section id="creators" class="py-32 relative bg-[#030305]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <h2 class="text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-medium mb-3">Verified Talent Roster</h2>
+        <p class="text-3xl sm:text-5xl font-normal text-white mb-4 tracking-tight">Creators That Drive Revenue</p>
+        <p class="text-neutral-400 text-sm sm:text-base font-light">Filtered directory of top beauty influencers, skincare specialists, and conversion-focused UGC talent.</p>
+      </div>
+
+      <!-- Search & Dynamic Filter Pill Bar -->
+      <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-12">
+        <div class="relative w-full md:w-96">
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"></i>
+          <input 
+            type="text" 
+            id="search-input"
+            placeholder="Search creators, handles, or niches..." 
+            class="w-full pl-11 pr-4 py-3.5 rounded-2xl glass-card text-xs tracking-wide text-white placeholder-neutral-500 focus:outline-none focus:border-white/30 transition"
+          />
+        </div>
+
+        <div id="filter-buttons" class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+          <button data-filter="All" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium transition bg-white text-neutral-950 shadow-sm">All Talent</button>
+          <button data-filter="Beauty" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium transition glass-card text-neutral-400 hover:text-white">Beauty & Skincare</button>
+          <button data-filter="Lifestyle" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium transition glass-card text-neutral-400 hover:text-white">Lifestyle</button>
+          <button data-filter="UGC" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium transition glass-card text-neutral-400 hover:text-white">UGC Talent</button>
+          <button data-filter="Top" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium transition glass-card text-neutral-400 hover:text-white">Top Performers</button>
+        </div>
+      </div>
+
+      <!-- Creator Cards Grid -->
+      <div id="creators-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE CAMPAIGN REACH & ROI CALCULATOR -->
+  <section id="calculator" class="py-28 bg-[#07080c] border-t border-white/5 relative">
+    <div class="max-w-5xl mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <h2 class="text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-medium mb-3">Interactive Planning</h2>
+        <p class="text-3xl sm:text-4xl font-normal text-white mb-3 tracking-tight">Estimate Campaign Reach</p>
+        <p class="text-neutral-400 text-xs sm:text-sm font-light">Adjust the target budget to calculate projected creator deliverables and impressions across our roster.</p>
+      </div>
+
+      <div class="glass-card p-8 sm:p-12 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-7 space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs uppercase tracking-wider text-neutral-400 font-medium">Target Campaign Budget</label>
+              <span id="budget-display" class="text-lg font-light text-white">₹50,000</span>
+            </div>
+            <input type="range" id="budget-range" min="10000" max="300000" step="5000" value="50000" class="w-full cursor-pointer">
+            <div class="flex justify-between text-[10px] text-neutral-500 mt-1 font-light">
+              <span>₹10,000</span>
+              <span>₹1,50,000</span>
+              <span>₹3,00,000+</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <span class="block text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Est. High-Converting Reels</span>
+              <span id="reels-calc" class="text-xl font-light text-white">5-8 Reels</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <span class="block text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Est. Projected Impressions</span>
+              <span id="impressions-calc" class="text-xl font-light text-white">180K - 350K</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-5 p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col justify-between h-full text-center md:text-left space-y-6">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-2 font-medium">Custom Media Brief</span>
+            <h3 class="text-lg font-normal text-white mb-2">Ready to lock in your roster?</h3>
+            <p class="text-xs text-neutral-400 font-light leading-relaxed">Our team will match you with exact talent deliverables tailored to your target ROI.</p>
+          </div>
+          <a href="mailto:nexusmedia490@gmail.com?subject=Campaign Brief Inquiry" class="w-full text-center py-3.5 rounded-full text-xs uppercase tracking-wider font-medium bg-white text-neutral-950 hover:bg-neutral-200 transition shadow-md">
+            Request Custom Brief
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES / SERVICES SECTION -->
+  <section id="services" class="py-32 bg-[#030305] border-t border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <h2 class="text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-medium mb-3">Core Agency Services</h2>
+        <p class="text-3xl sm:text-4xl font-normal text-white mb-4 tracking-tight">End-to-End Creator Strategy</p>
+        <p class="text-neutral-400 text-sm sm:text-base font-light">Eliminating friction between top-tier brands and performance talent.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-card p-8 rounded-3xl group hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white mb-6 group-hover:scale-105 transition">
+            <i data-lucide="megaphone" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-normal text-white mb-2 tracking-tight">Influencer Campaign Management</h3>
+          <p class="text-sm text-neutral-400 font-light leading-relaxed">Full-spectrum management including talent selection, contract execution, brief delivery, and performance tracking.</p>
+        </div>
+        <div class="glass-card p-8 rounded-3xl group hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white mb-6 group-hover:scale-105 transition">
+            <i data-lucide="video" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-normal text-white mb-2 tracking-tight">High-Converting UGC Production</h3>
+          <p class="text-sm text-neutral-400 font-light leading-relaxed">Conversion-optimized user-generated content tailored specifically forMeta ads, TikTok, and brand media channels.</p>
+        </div>
+        <div class="glass-card p-8 rounded-3xl group hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white mb-6 group-hover:scale-105 transition">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-normal text-white mb-2 tracking-tight">Exclusive Talent Representation</h3>
+          <p class="text-sm text-neutral-400 font-light leading-relaxed">Dedicated management, brand partnership negotiations, and long-term commercial positioning for creators.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="py-32 bg-[#07080c] border-t border-white/5 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative z-10">
+      <h2 class="text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-medium mb-3">About Nexus Media</h2>
+      <p class="text-3xl sm:text-5xl font-normal text-white mb-8 tracking-tight">Built for Performance & Authenticity</p>
+      <div class="glass-card p-8 sm:p-12 rounded-3xl text-left space-y-6 text-neutral-300 leading-relaxed text-base sm:text-lg font-light">
+        <p>
+          Nexus Media represents a curated collective of high-performing beauty, skincare, lifestyle, and UGC creators. We focus exclusively on talent with proven engagement metrics and genuine audience influence.
+        </p>
+        <p class="text-neutral-400 text-sm sm:text-base font-light">
+          We handle every operational detail—from contract negotiations and campaign briefs to asset delivery—enabling seamless, high-ROI collaborations for global and emerging brands.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECT COLLABORATION DESK -->
+  <section id="contact" class="py-32 bg-[#030305] border-t border-white/5 relative">
+    <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center">
+      <h2 class="text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-medium mb-3">Direct Collaboration Desk</h2>
+      <p class="text-3xl sm:text-5xl font-normal text-white mb-6 tracking-tight">Connect With Us Directly</p>
+      <p class="text-neutral-400 text-sm sm:text-base font-light max-w-xl mx-auto mb-12">
+        Ready to launch your next campaign or join our creator roster? Reach out straight to our management desk.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-8 rounded-3xl flex flex-col items-center justify-center text-center">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white mb-4">
+            <i data-lucide="mail" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-normal text-white mb-1">Official Email Inquiries</h3>
+          <p class="text-xs text-neutral-400 font-light mb-6">For brand campaign briefs, booking requests, and commercial partnerships.</p>
+          <a href="mailto:nexusmedia490@gmail.com" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-wider font-medium bg-white text-neutral-950 hover:bg-neutral-200 transition shadow-sm">
+            nexusmedia490@gmail.com <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl flex flex-col items-center justify-center text-center">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white mb-4">
+            <i data-lucide="instagram" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-normal text-white mb-1">Direct Social Portal</h3>
+          <p class="text-xs text-neutral-400 font-light mb-6">Direct message us for immediate talent roster availability and campaign updates.</p>
+          <a href="https://instagram.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-wider font-medium bg-white/[0.03] text-white border border-white/10 hover:bg-white/[0.08] transition">
+            @nexusmedia <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 bg-[#030305] border-t border-white/5 text-neutral-500 text-xs tracking-wider">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div>
+        <span class="text-white font-normal uppercase tracking-widest text-sm block mb-1">Nexus Media</span>
+        <p class="font-light text-neutral-400">Elite Creator Management & UGC Representation</p>
+      </div>
+      <div class="flex items-center gap-8 text-xs uppercase">
+        <a href="#home" class="hover:text-white transition">Home</a>
+        <a href="#creators" class="hover:text-white transition">Roster</a>
+        <a href="#services" class="hover:text-white transition">Capabilities</a>
+        <a href="mailto:nexusmedia490@gmail.com" class="hover:text-white transition">Contact</a>
+      </div>
+      <div class="font-light">
+        &copy; <span id="current-year"></span> Nexus Media. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC CREATOR SPECIFICATION MODAL -->
+  <div id="creator-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-all duration-300">
+    <div class="glass-card bg-[#07080c] border border-white/10 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl overflow-y-auto max-h-[90vh] animate-fade-in-up">
+      <button id="modal-close" class="absolute top-6 right-6 text-neutral-400 hover:text-white p-2 rounded-full bg-white/5 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-4 mb-6">
+        <div id="modal-avatar" class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-xl font-light text-white shadow-inner">
+          A
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 id="modal-name" class="text-xl font-normal text-white tracking-tight">Creator Name</h3>
+            <span id="modal-badge-container" class="hidden px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium bg-white/[0.08] text-neutral-300 border border-white/10">
+              <span id="modal-badge-text">Badge</span>
+            </span>
+          </div>
+          <p id="modal-niche" class="text-xs text-neutral-400 font-light mt-0.5">Niche</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 mb-8">
+        <div id="modal-metrics" class="grid grid-cols-2 gap-3"></div>
+        
+        <div id="modal-brands-container" class="hidden p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+          <span class="block text-[10px] text-neutral-400 mb-2 font-medium uppercase tracking-wider">Previous Brand Collaborations</span>
+          <div id="modal-brands-list" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="modal-pricing-container" class="hidden p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+          <span class="block text-[10px] text-neutral-400 mb-2 font-medium uppercase tracking-wider">Deliverable Pricing</span>
+          <div id="modal-pricing-list" class="space-y-1.5 text-xs text-neutral-300 font-light"></div>
+        </div>
+
+        <div id="modal-social-container" class="hidden p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2"></div>
+      </div>
+
+      <div class="flex gap-3">
+        <a id="modal-booking-email" href="mailto:nexusmedia490@gmail.com" class="flex-1 text-center py-3.5 rounded-full text-xs uppercase tracking-wider font-medium bg-white text-neutral-950 hover:bg-neutral-200 transition shadow-sm">
+          Book Creator Now
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT & INTERACTIVE LOGIC -->
+  <script>
+    // Exact Creator Database
+    const creatorsData = [
+      {
+        id: "aditi",
+        name: "Aditi",
+        niche: "Lifestyle",
+        platform: "Instagram",
+        email: "saniaditi2411@gmail.com",
+        instagram: "@saniaditi2411",
+        followers: "Available upon request",
+        viewsReach: "Available",
+        previousBrands: [],
+        badge: null
+      },
+      {
+        id: "manisha-jha",
+        name: "Manisha Jha",
+        niche: "Skincare / Beauty",
+        platform: "Instagram",
+        followers: "672K",
+        reach: "672K",
+        peakViews: "1.6M",
+        averageReelViews: "20K",
+        previousBrands: ["Dot & Key", "Aqualogica"],
+        badge: "Top Creator"
+      },
+      {
+        id: "ifra",
+        name: "Ifra",
+        niche: "Skincare",
+        platform: "Instagram",
+        followers: "1,852",
+        averageViews: "10K",
+        previousBrands: ["Mars", "Aqualogica"],
+        badge: null
+      },
+      {
+        id: "manisha",
+        name: "Manisha",
+        niche: "Beauty / UGC",
+        platform: "Instagram",
+        followers: "3,698",
+        averageViews: "2K",
+        previousBrands: ["Dot & Key", "Maybelline", "Forever 52", "TRESemmé", "Plum"],
+        pricing: {
+          basicReelStory: "₹2,000",
+          voiceoverUtmStory: "₹3,000"
+        },
+        badge: "Top Creator"
+      },
+      {
+        id: "shruti-shenoy",
+        name: "Shruthi Shenoy",
+        niche: "Lifestyle",
+        platform: "Instagram",
+        followers: "1,852",
+        averageViews: "5K",
+        previousBrands: [],
+        badge: null
+      },
+      {
+        id: "ishani",
+        name: "Ishani",
+        platform: "Instagram",
+        type: "UGC",
+        niche: "UGC",
+        followers: "20K",
+        viewsReach: "90K",
+        instagram: "@your_beautsquad",
+        email: "yourbeautsquad@gmail.com",
+        previousBrands: [],
+        badge: "High Priority"
+      },
+      {
+        id: "priyanka",
+        name: "Priyanka",
+        platform: "Instagram",
+        type: "UGC",
+        niche: "UGC",
+        followers: "13K",
+        viewsReach: "20K",
+        instagram: "@coffeexblush",
+        email: "danevapriyanka21@gmail.com",
+        previousBrands: [],
+        badge: "High Priority"
+      },
+      {
+        id: "noor-by-shafa",
+        name: "Noor By Shafa",
+        platform: "Instagram",
+        type: "UGC",
+        niche: "UGC",
+        followers: "600",
+        viewsReach: "600",
+        instagram: "@noor.byshafa",
+        previousBrands: [],
+        badge: null
+      },
+      {
+        id: "ruchiii-singh",
+        name: "Ruchiii Singh",
+        platform: "Instagram",
+        type: "UGC",
+        niche: "UGC",
+        followers: "9K",
+        viewsReach: "9M",
+        viewsReachLabel: "Reported Views/Reach",
+        instagram: "@ruchiii_singh__",
+        email: "17ruchi.singh@gmail.com",
+        previousBrands: [],
+        badge: "Top Pick"
+      },
+      {
+        id: "ugc-with-hira",
+        name: "UGC With Hira",
+        platform: "Instagram",
+        type: "UGC",
+        niche: "UGC",
+        followers: "200",
+        viewsReach: "600",
+        instagram: "@ugc.withhira",
+        previousBrands: [],
+        badge: null
+      }
+    ];
+
+    let currentFilter = 'All';
+    let searchQuery = '';
+
+    const gridEl = document.getElementById('creators-grid');
+    const searchInput = document.getElementById('search-input');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const modalEl = document.getElementById('creator-modal');
+    const modalClose = document.getElementById('modal-close');
+
+    // Mouse Tracking Ambient Glow Effect
+    window.addEventListener('mousemove', (e) => {
+      document.body.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.body.style.setProperty('--mouse-y', `${e.clientY}px`);
+    });
+
+    // Smooth Preloader Progress Sequence (3.5 Seconds)
+    let progress = 0;
+    const loaderBar = document.getElementById('loader-bar');
+    const loaderCounter = document.getElementById('loader-counter');
+    const loaderInterval = setInterval(() => {
+      progress += 2;
+      if (progress <= 100) {
+        loaderBar.style.width = `${progress}%`;
+        loaderCounter.innerText = `${progress}%`;
+      } else {
+        clearInterval(loaderInterval);
+        setTimeout(() => {
+          const loader = document.getElementById('loader');
+          loader.style.opacity = '0';
+          setTimeout(() => loader.style.display = 'none', 1000);
+        }, 300);
+      }
+    }, 60);
+
+    // Render Creator Grid
+    function renderCreators() {
+      const filtered = creatorsData.filter(creator => {
+        const matchesSearch = creator.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              (creator.instagram && creator.instagram.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                              creator.niche.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        if (!matchesSearch) return false;
+
+        if (currentFilter === 'All') return true;
+        if (currentFilter === 'Beauty') return creator.niche.toLowerCase().includes('beauty') || creator.niche.toLowerCase().includes('skincare');
+        if (currentFilter === 'Lifestyle') return creator.niche.toLowerCase().includes('lifestyle');
+        if (currentFilter === 'UGC') return creator.type === 'UGC' || creator.niche.toLowerCase().includes('ugc');
+        if (currentFilter === 'Top') return creator.badge === 'Top Creator' || creator.badge === 'Top Pick' || creator.badge === 'High Priority';
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = `<div class="col-span-full text-center py-20 text-neutral-500 font-light text-sm">No creators found matching your criteria.</div>`;
+        return;
+      }
+
+      gridEl.innerHTML = filtered.map(creator => `
+        <div onclick="openModal('${creator.id}')" class="glass-card p-6 rounded-3xl cursor-pointer group flex flex-col justify-between transition-all duration-300">
+          <div>
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center font-light text-white text-base group-hover:border-white/25 transition">
+                  ${creator.name.charAt(0)}
+                </div>
+                <div>
+                  <h3 class="text-base font-normal text-white group-hover:text-neutral-300 transition tracking-tight">${creator.name}</h3>
+                  <p class="text-xs text-neutral-400 font-light">${creator.niche} ${creator.type ? `• ${creator.type}` : ''}</p>
+                </div>
+              </div>
+              ${creator.badge ? `<span class="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider font-medium bg-white/[0.06] text-neutral-300 border border-white/10">${creator.badge}</span>` : ''}
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 my-4 pt-4 border-t border-white/5 text-xs">
+              <div>
+                <span class="text-neutral-500 font-light block mb-0.5 uppercase tracking-wider text-[10px]">Followers</span>
+                <span class="font-normal text-white">${creator.followers || 'Available'}</span>
+              </div>
+              <div>
+                <span class="text-neutral-500 font-light block mb-0.5 uppercase tracking-wider text-[10px]">${creator.viewsReachLabel || 'Views / Reach'}</span>
+                <span class="font-normal text-white">${creator.viewsReach || creator.averageViews || creator.reach || 'Available'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 flex items-center justify-between text-xs font-light text-neutral-400 group-hover:text-white transition">
+            <span class="truncate pr-2">${creator.instagram || 'View Details'}</span>
+            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-neutral-950 transition shrink-0">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // Modal Display Logic
+    window.openModal = function(id) {
+      const creator = creatorsData.find(c => c.id === id);
+      if (!creator) return;
+
+      document.getElementById('modal-avatar').innerText = creator.name.charAt(0);
+      document.getElementById('modal-name').innerText = creator.name;
+      document.getElementById('modal-niche').innerText = `${creator.niche} ${creator.type ? `• ${creator.type}` : ''}`;
+      
+      const badgeContainer = document.getElementById('modal-badge-container');
+      if (creator.badge) {
+        badgeContainer.classList.remove('hidden');
+        document.getElementById('modal-badge-text').innerText = creator.badge;
+      } else {
+        badgeContainer.classList.add('hidden');
+      }
+
+      // Dynamic Metrics
+      let metricsHTML = '';
+      if (creator.followers) {
+        metricsHTML += `<div class="p-3 rounded-2xl bg-white/[0.02] border border-white/5"><span class="block text-[10px] uppercase tracking-wider text-neutral-500 font-light mb-0.5">Followers</span><span class="text-xs font-normal text-white">${creator.followers}</span></div>`;
+      }
+      if (creator.viewsReach || creator.reach) {
+        metricsHTML += `<div class="p-3 rounded-2xl bg-white/[0.02] border border-white/5"><span class="block text-[10px] uppercase tracking-wider text-neutral-500 font-light mb-0.5">${creator.viewsReachLabel || 'Views / Reach'}</span><span class="text-xs font-normal text-white">${creator.viewsReach || creator.reach}</span></div>`;
+      }
+      if (creator.averageViews) {
+        metricsHTML += `<div class="p-3 rounded-2xl bg-white/[0.02] border border-white/5"><span class="block text-[10px] uppercase tracking-wider text-neutral-500 font-light mb-0.5">Avg Views</span><span class="text-xs font-normal text-white">${creator.averageViews}</span></div>`;
+      }
+      if (creator.peakViews) {
+        metricsHTML += `<div class="p-3 rounded-2xl bg-white/[0.02] border border-white/5"><span class="block text-[10px] uppercase tracking-wider text-neutral-500 font-light mb-0.5">Peak Views</span><span class="text-xs font-normal text-white">${creator.peakViews}</span></div>`;
+      }
+      document.getElementById('modal-metrics').innerHTML = metricsHTML;
+
+      // Previous Brands
+      const brandsContainer = document.getElementById('modal-brands-container');
+      if (creator.previousBrands && creator.previousBrands.length > 0) {
+        brandsContainer.classList.remove('hidden');
+        document.getElementById('modal-brands-list').innerHTML = creator.previousBrands.map(b => `<span class="px-3 py-1 rounded-full text-xs font-light bg-white/5 text-neutral-300 border border-white/10">${b}</span>`).join('');
+      } else {
+        brandsContainer.classList.add('hidden');
+      }
+
+      // Deliverable Pricing
+      const pricingContainer = document.getElementById('modal-pricing-container');
+      if (creator.pricing) {
+        pricingContainer.classList.remove('hidden');
+        let pHTML = '';
+        if (creator.pricing.basicReelStory) pHTML += `<div class="flex justify-between"><span>Basic Reel + 1 Story:</span> <span class="font-normal text-white">${creator.pricing.basicReelStory}</span></div>`;
+        if (creator.pricing.voiceoverUtmStory) pHTML += `<div class="flex justify-between"><span>Voiceover Reel + 1 UTM Story:</span> <span class="font-normal text-white">${creator.pricing.voiceoverUtmStory}</span></div>`;
+        document.getElementById('modal-pricing-list').innerHTML = pHTML;
+      } else {
+        pricingContainer.classList.add('hidden');
+      }
+
+      // Social Handles
+      const socialContainer = document.getElementById('modal-social-container');
+      let socialHTML = '';
+      if (creator.instagram) socialHTML += `<div class="flex items-center justify-between text-xs font-light text-neutral-300"><span class="text-neutral-400 font-medium uppercase tracking-wider text-[10px]">Instagram:</span> <span>${creator.instagram}</span></div>`;
+      if (creator.email) socialHTML += `<div class="flex items-center justify-between text-xs font-light text-neutral-300"><span class="text-neutral-400 font-medium uppercase tracking-wider text-[10px]">Email:</span> <span>${creator.email}</span></div>`;
+      
+      if (socialHTML) {
+        socialContainer.classList.remove('hidden');
+        socialContainer.innerHTML = socialHTML;
+      } else {
+        socialContainer.classList.add('hidden');
+      }
+
+      // Dynamic Direct Mail Link
+      document.getElementById('modal-booking-email').href = `mailto:nexusmedia490@gmail.com?subject=Booking Inquiry for ${creator.name}`;
+
+      modalEl.classList.remove('hidden');
+    }
+
+    modalClose.addEventListener('click', () => modalEl.classList.add('hidden'));
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) modalEl.classList.add('hidden');
+    });
+
+    // Campaign ROI Calculator Logic
+    const budgetRange = document.getElementById('budget-range');
+    const budgetDisplay = document.getElementById('budget-display');
+    const reelsCalc = document.getElementById('reels-calc');
+    const impressionsCalc = document.getElementById('impressions-calc');
+
+    budgetRange.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      budgetDisplay.innerText = `₹${val.toLocaleString()}`;
+      
+      const minReels = Math.max(2, Math.floor(val / 7000));
+      const maxReels = Math.floor(val / 4000);
+      reelsCalc.innerText = `${minReels}-${maxReels} Deliverables`;
+
+      const minImp = Math.floor(val * 3.5);
+      const maxImp = Math.floor(val * 7.5);
+      impressionsCalc.innerText = `${(minImp / 1000).toFixed(0)}K - ${(maxImp / 1000).toFixed(0)}K Views`;
+    });
+
+    // Search and Filter Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCreators();
+    });
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-white', 'text-neutral-950', 'shadow-sm');
+          b.classList.add('glass-card', 'text-neutral-400');
+        });
+        btn.classList.add('bg-white', 'text-neutral-950', 'shadow-sm');
+        btn.classList.remove('glass-card', 'text-neutral-400');
+        
+        currentFilter = btn.getAttribute('data-filter');
+        renderCreators();
+      });
+    });
+
+    // Mobile Navigation Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // Footer Year Update
+    document.getElementById('current-year').innerText = new Date().getFullYear();
+
+    // Initial Execution
+    renderCreators();
+  </script>
+</body>
+</html>
